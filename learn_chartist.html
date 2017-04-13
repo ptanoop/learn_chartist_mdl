@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" href="styles\main_chartist.css">		
+		<link rel="stylesheet" href="styles\material.css">
+		<link rel="stylesheet" href="styles\mdl_icons.css">
+		<link rel="stylesheet" href="styles\test_metric.css">
+		
+		<script src="jslibs\material.js"></script>		
+		<script src="jslibs\chartist.js"></script>
+		<script src="jslibs\jquery-1.10.2.min.js"></script>
+		<script src="jslibs\metric_data.js"></script>
+	</head>
+	
+	<script>
+	
+	
+		$('document').ready(function(){
+		
+			var SERIES_ONE_POLL_INTERVAL = 2000; // 2 Sec
+			var SERIES_TWO_POLL_INTERVAL = 5000; // 5 Sec
+			var SERIES_ONE_POINTS = 60000 / SERIES_ONE_POLL_INTERVAL;			
+			var SERIES_TWO_POINTS = 60000 / SERIES_TWO_POLL_INTERVAL;
+			
+			var CHART_ONE_SERIES = [];
+			for(var i = 0; i < 3; i++){
+				var series = [];
+				for(var j = 0; j < SERIES_ONE_POINTS; j++){
+					series.push(i*(10*Math.random())+Math.random());
+				}
+				CHART_ONE_SERIES.push(series)				
+			}															
+			var chartOne = new Chartist.Line('#chart_one', {					
+				series: CHART_ONE_SERIES		
+				}, { fullWidth: true,  chartPadding: {right: 30, top:30}										
+			});
+			
+			
+			var CHART_TWO_SERIES = [];
+			for(var i = 0; i < 3; i++){
+				var series = [];
+				for(var j = 0; j < SERIES_TWO_POINTS; j++){
+					series.push(i*(10*Math.random())+Math.random());
+				}
+				CHART_TWO_SERIES.push(series)				
+			}
+			var chartTwo = new Chartist.Line('#chart_two', {					
+				series: CHART_TWO_SERIES		
+				}, { 
+					fullWidth: true,  
+					showArea: true,
+					showPoint: false,
+					chartPadding: {right: 30, top:30}										
+			});
+			
+			
+			chartTwo.on('draw', function(data) {
+			  if(data.type === 'line' || data.type === 'area') {
+				data.element.animate({
+				  d: {
+					begin: 300 * data.index,
+					dur: 100,
+					from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+					to: data.path.clone().stringify(),
+					easing: Chartist.Svg.Easing.easeOutQuint
+				  }
+				});
+			  }
+			});
+			
+			
+			$('#seriesOneValue').html(getLastValueInText(CHART_ONE_SERIES[0]));
+			$('#seriesTwoValue').html(getLastValueInText(CHART_ONE_SERIES[1]));
+			$('#seriesThreeValue').html(getLastValueInText(CHART_ONE_SERIES[2]));
+			$('#seriesFourValue').html(getLastValueInText(CHART_TWO_SERIES[0]));
+			$('#seriesFiveValue').html(getLastValueInText(CHART_TWO_SERIES[1]));
+			$('#seriesSixValue').html(getLastValueInText(CHART_TWO_SERIES[2]));
+			
+			function getLastValueInText(series){
+				console.log('series = ',series);
+				var lastValue = series[series.length - 1];
+				lastValue = Math.round(lastValue * 100) / 100;
+				lastValue = lastValue.toString();
+				var splitOnDot = lastValue.split(".");
+				if(splitOnDot[0] < 10)splitOnDot[0] = "0" + splitOnDot[0];
+				if(splitOnDot[1]==undefined || splitOnDot[1].length == 0)splitOnDot[1] = "00";
+				if(splitOnDot[1].length == 1)splitOnDot[1] = splitOnDot[1] + "0";
+				lastValue = splitOnDot[0] + "." + splitOnDot[1];				
+				return lastValue;
+			};
+			
+			setInterval(function(){							
+				for(var i = 0; i < 10; i++){					
+					var shValue = CHART_ONE_SERIES[i%3].shift();
+					CHART_ONE_SERIES[i%3].push(shValue+10*Math.random());
+				}										
+				chartOne.update();	
+				$('#seriesOneValue').html(getLastValueInText(CHART_ONE_SERIES[0]));
+				$('#seriesTwoValue').html(getLastValueInText(CHART_ONE_SERIES[1]));
+				$('#seriesThreeValue').html(getLastValueInText(CHART_ONE_SERIES[2]));
+					
+			}, SERIES_ONE_POLL_INTERVAL);
+			
+			setInterval(function(){
+				for(var i = 0; i < 3; i++){					
+					var shValue = CHART_TWO_SERIES[i].shift();
+					CHART_TWO_SERIES[i].push(shValue+10*Math.random());
+				}
+				chartTwo.update();
+				$('#seriesFourValue').html(getLastValueInText(CHART_TWO_SERIES[0]));
+				$('#seriesFiveValue').html(getLastValueInText(CHART_TWO_SERIES[1]));
+				$('#seriesSixValue').html(getLastValueInText(CHART_TWO_SERIES[2]));
+				
+			}, SERIES_TWO_POLL_INTERVAL);
+										
+		});
+		//#d70206
+		//#f05b4f
+		//#f4c63d
+		
+	</script>	
+	
+	<body>
+		<div>
+			<header class="mdl-layout__header is-casting-shadow  test_metric_header">				
+				<div class="mdl-layout__header-row" style="height:50px !important">
+					<span class="mdl-layout-title  test_metric_header_text_color" >LEARN CHARTIST</span>						
+				</div>					
+			</header>					
+			<div class="mdl-grid  test_metric_main_grid">		
+				<div class="mdl-cell mdl-cell--1-col"></div>
+				<div class="mdl-cell mdl-cell--10-col">
+					<div class="mdl-grid  test_metric_chart_headgrid">
+						<div class="mdl-cell mdl-cell--12-col"><label>CHART ONE</label></div>
+					</div>
+					<div class="mdl-grid mdl-color--white mdl-shadow--2dp">						
+						<div class="mdl-cell mdl-cell--6-col">
+							<div class="mdl-grid" style="padding:0px">		
+								<div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp  test_chart_field_div" style="color:#ea262a;">									
+									<div id="seriesOneValue" class=" test_chart_field_value">
+										00.00
+									</div>									
+									<div class=" test_chart_field_text">SERIES ONE</div>
+								</div>		
+								<div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp  test_chart_field_div" style="color:#f05b4f">									
+									<div id="seriesTwoValue" class=" test_chart_field_value">
+										00.00
+									</div>			
+									<div class=" test_chart_field_text">SERIES TWO</div>
+								</div>																														
+							</div>
+							<div class="mdl-grid" style="padding:0px">	
+								<div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp  test_chart_field_div" style="color:#f4c63d">									
+									<div id="seriesThreeValue" class=" test_chart_field_value">
+										00.00
+									</div>				
+									<div class=" test_chart_field_text">SERIES THREE</div>									
+								</div>	
+								<div class="mdl-cell mdl-cell--6-col " style="#f05b4f">
+									
+								</div>								
+							</div>							
+						</div>
+						<div class="mdl-cell mdl-cell--6-col">							
+							<div id='chart_one' class='ct-chart  test_metric_chart'></div>						
+						</div>						
+					</div>
+					<br>
+					<div class="mdl-grid  test_metric_chart_headgrid">
+						<div class="mdl-cell mdl-cell--12-col"><label>CHART TWO</label></div>
+					</div>
+					<div class="mdl-grid mdl-color--white mdl-shadow--2dp">
+						<div class="mdl-cell mdl-cell--6-col">
+							<div class="mdl-grid" style="padding:0px">		
+								<div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp  test_chart_field_div" style="color:#ea262a;">									
+									<div id="seriesFourValue" class=" test_chart_field_value">
+										00.00
+									</div>									
+									<div class=" test_chart_field_text">SERIES FOUR</div>
+								</div>		
+								<div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp  test_chart_field_div" style="color:#f05b4f">									
+									<div id="seriesFiveValue" class=" test_chart_field_value">
+										00.00
+									</div>			
+									<div class=" test_chart_field_text">SERIES FIVE</div>
+								</div>																														
+							</div>
+							<div class="mdl-grid" style="padding:0px">	
+								<div class="mdl-cell mdl-cell--6-col mdl-shadow--2dp  test_chart_field_div" style="color:#f4c63d">									
+									<div id="seriesSixValue" class=" test_chart_field_value">
+										00.00
+									</div>				
+									<div class=" test_chart_field_text">SERIES SIX</div>									
+								</div>	
+								<div class="mdl-cell mdl-cell--6-col " style="#f05b4f">
+									
+								</div>								
+							</div>							
+						</div>
+						<div class="mdl-cell mdl-cell--6-col">							
+							<div id='chart_two' class='ct-chart  test_metric_chart'></div>						
+						</div>	
+					</div>
+				</div>			
+				<div class="mdl-cell mdl-cell--1-col"></div>			
+			</div>					
+			
+		<div>	
+		<br><br>
+			
+	</body>	
+</html>	

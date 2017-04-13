@@ -1,0 +1,50 @@
+.test_metric_header {
+   min-height: 50px !important;
+}
+.test_metric_header_text_color {
+   color: aliceblue;
+   font-weight: bold;
+}
+.test_metric_main_grid {
+   margin-top: 4px;
+}
+.test_metric_chart_headgrid {
+   background-color: #6da587;
+   border: 1px solid aliceblue;
+}
+.test_metric_chart_headgrid>div {
+   height: 20px;
+}
+.test_metric_chart_headgrid>div>label {
+   font-size: 20px;
+   color: white;
+   font-weight: bold;
+}
+.test_chart_field_div {
+   padding: 10px;
+   background-color: #2a2b3b;
+   border-radius: 5px;
+}
+.test_chart_field_text {
+   font-size: 15px;
+   font-weight: bold;
+   text-align: left;
+}
+.test_chart_field_value {
+   font-size: 30px;
+   font-weight: bold;
+   text-align: right;
+}
+.test_metric_chart {
+   border: 0px solid #000;
+   width: 100%;
+   height: 300px;
+   border-radius: 5px;
+   background-color: #453D3F;
+}
+.test_metric_chart>svg>g>.ct-grid {
+   stroke: rgba(255, 255, 255, 0.5) !important;
+}
+.test_metric_chart>svg>g>foreignObject>span {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
